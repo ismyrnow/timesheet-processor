@@ -1,12 +1,8 @@
 var fs = require("fs");
+var fn = require("./functions");
 
 var dates = {};
 var currentDate;
-var regex = {
-	empty: /^\s*$/,
-	date: /^[A-Za-z]{3} .*$/,
-	task: /^\[(.+)-(.+)\] (.+): (.+)$/
-};
 
 (function main () {
 
@@ -21,80 +17,35 @@ var regex = {
 
 	for (var date in dates) {
 		if (dates.hasOwnProperty(date)) {
+
 			var tasks = dates[date];
-			// TODO: do some fancyness to combine matching projects
+			var groupedTasks = fn.getGroupedTasks(tasks);
+
+			printTasks(groupedTasks);
 		}
 	}
-
-	printResults();
 
 }());
 
 function processLine (line) {
 	var text = line.toString().replace(/[\r\n]/g, "");
 
-	if (regex.empty.test(text)) return;
+	var type = fn.getTextType(text);
 
-	if (regex.date.test(text)) storeDate(text);
-
-	if (regex.task.test(text)) storeTask(text);
-}
-
-function storeDate (text) {
-	dates[text] = dates[text] || [];
-	currentDate = text;
-}
-
-function storeTask (text) {
-	var task = createTask(text);
-
-	dates[currentDate].push(task);
-}
-
-function printResults () {
-	console.log(dates);
-}
-
-
-// Exports
-// -------
-
-function createTask(text) {
-	var parsed = regex.task.exec(text);
-
-	var startTime = parsed[1];
-	var endTime = parsed[2];
-
-	var task = {
-		time: getElapsedTime(startTime, endTime),
-		project: parsed[3],
-		comments: parsed[4]
-	};
-
-	return task;
-}
-
-function getElapsedTime(startTime, endTime) {
-	// Example: "12:45", "2:15" => 1.5
-	var start = getFractionalHour(startTime);
-	var end = getFractionalHour(endTime);
-
-	if (end < start) {
-		end += 12; // end is PM, start is AM
+	switch (type) {
+		case "empty":
+			return;
+		case "date":
+			dates[text] = dates[text] || [];
+			currentDate = text;
+			break;
+		case "task":
+			var task = fn.createTask(text);
+			dates[currentDate].push(task);
+			break;
 	}
-
-	return end - start;
 }
 
-function getFractionalHour(timeString) {
-	// Example: "8:45" => 8.75
-	var timeArray = timeString.split(":");
-	var hour = parseInt(timeArray[0], 10);
-	var minute = parseInt(timeArray[1], 10) / 60;
-
-	return hour + minute;
+function printTasks(tasks) {
+	console.log(tasks);
 }
-
-exports.getFractionalHour = getFractionalHour;
-exports.getElapsedTime = getElapsedTime;
-exports.createTask = createTask;
