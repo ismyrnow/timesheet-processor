@@ -1,6 +1,7 @@
 var fs = require("fs");
 
 var dates = {};
+var currentDate;
 var regex = {
 	empty: /^\s*$/,
 	date: /^[A-Za-z]{3} .*$/,
@@ -27,7 +28,7 @@ var regex = {
 
 	printResults();
 
-})();
+}());
 
 function processLine (line) {
 	var text = line.toString().replace(/[\r\n]/g, "");
@@ -41,21 +42,59 @@ function processLine (line) {
 
 function storeDate (text) {
 	dates[text] = dates[text] || [];
-	dates.current = text;
+	currentDate = text;
 }
 
 function storeTask (text) {
-	var parsed = regex.task.exec(text);	
-	var task = {
-		startTime: parsed[1],
-		endTime: parsed[2],
-		project: parsed[3],
-		comments: parsed[4]
-	};
+	var task = createTask(text);
 
-	dates[dates.current].push(task);
+	dates[currentDate].push(task);
 }
 
 function printResults () {
 	console.log(dates);
 }
+
+
+// Exports
+// -------
+
+function createTask(text) {
+	var parsed = regex.task.exec(text);
+
+	var startTime = parsed[1];
+	var endTime = parsed[2];
+
+	var task = {
+		time: getElapsedTime(startTime, endTime),
+		project: parsed[3],
+		comments: parsed[4]
+	};
+
+	return task;
+}
+
+function getElapsedTime(startTime, endTime) {
+	// Example: "12:45", "2:15" => 1.5
+	var start = getFractionalHour(startTime);
+	var end = getFractionalHour(endTime);
+
+	if (end < start) {
+		end += 12; // end is PM, start is AM
+	}
+
+	return end - start;
+}
+
+function getFractionalHour(timeString) {
+	// Example: "8:45" => 8.75
+	var timeArray = timeString.split(":");
+	var hour = parseInt(timeArray[0], 10);
+	var minute = parseInt(timeArray[1], 10) / 60;
+
+	return hour + minute;
+}
+
+exports.getFractionalHour = getFractionalHour;
+exports.getElapsedTime = getElapsedTime;
+exports.createTask = createTask;
