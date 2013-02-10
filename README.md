@@ -29,7 +29,7 @@ Mon 1/28
 Requires node.js.
 
 ```
-node main
+node main timesheet.txt
 ```
 
 ## Tests
