@@ -1,7 +1,7 @@
 var regex = {
 	empty: /^\s*$/,
 	date: /^[A-Za-z]{3} .*$/,
-	task: /^\[(.+)-(.+)\] (.+): (.+)$/
+	task: /^\[(.+)-(.+)\] ([^:]+)(?:: )?(.*)$/
 };
 
 exports.createTask = function (text) {

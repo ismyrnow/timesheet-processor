@@ -21,10 +21,22 @@ exports.createTask = function (test) {
 	test.done();
 };
 
+exports.createTask_NoComments = function (test) {
+	var text = "[12:30-1:00] Lunch";
+	var task = fn.createTask(text);
+
+	test.equal(task.project, "Lunch");
+	test.equal(task.comments, "");
+
+	test.done();
+};
+
 exports.getTextType = function (test) {
 	test.equal(fn.getTextType("[12:45-4:00] MBI: offline wizard"), "task");
 	test.equal(fn.getTextType("Mon 1/28"), "date");
 	test.equal(fn.getTextType(""), "empty");
+
+	test.equal(fn.getTextType("[12:45-1:15] Lunch"), "task");
 
 	test.done();
 };
@@ -38,7 +50,7 @@ exports.getGroupedTasks = function (test) {
 	var groupedTasks = fn.getGroupedTasks(tasks);
 
 	test.equal(groupedTasks.length, 2);
-	
+
 	var mbiTask = (groupedTasks[0].project === "MBI") ?
 		groupedTasks[0] : groupedTasks[1];
 

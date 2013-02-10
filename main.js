@@ -1,4 +1,5 @@
 var fs = require("fs");
+var printf = require("util").format;
 var fn = require("./functions");
 
 var dates = {};
@@ -21,9 +22,11 @@ var currentDate;
 			var tasks = dates[date];
 			var groupedTasks = fn.getGroupedTasks(tasks);
 
-			printTasks(groupedTasks);
+			printTasks(date, groupedTasks);
 		}
 	}
+
+	console.log("");
 
 }());
 
@@ -46,6 +49,21 @@ function processLine (line) {
 	}
 }
 
-function printTasks(tasks) {
-	console.log(tasks);
+function printTasks(date, tasks) {
+	console.log(printf("\n%s\n", date));
+
+	for (var i in tasks) {
+		var task = tasks[i];
+		printTask(task);
+	}
+}
+
+function printTask(task) {
+	var output = printf("  %s (%d)", task.project, task.time);
+
+	if (task.comments) {
+		output += ": " + task.comments;
+	}
+
+	console.log(output);
 }
