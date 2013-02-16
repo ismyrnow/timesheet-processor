@@ -18,7 +18,7 @@ Mon 1/28
 The output looks like so:
 
 ```
-Mon 1/28
+Mon 1/28 (7.5 / 8)
   MBI (2.5): wrote some code, fixed bugs, meeting
   NAOP (0.75): tooltip design
   ...
@@ -26,7 +26,7 @@ Mon 1/28
 
 ## Usage
 
-Requires node.js.
+Requires nodejs v0.8+.
 
 ```
 node main timesheet.txt

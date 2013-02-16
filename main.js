@@ -8,11 +8,16 @@ var currentDate;
 (function main () {
 
 	if (process.argv.length < 3) {
-		console.log("Usage: node " + process.argv[1] + " FILENAME");
+		console.log("Usage: 'node main <path>'");
 		process.exit(1);
 	}
 
 	var filename = process.argv[2];
+
+	if (!fs.existsSync(filename)) {
+		console.log("File not found.");
+		process.exit(1);
+	}
 
 	fs.readFileSync(filename).toString().split("\r\n").forEach(processLine);
 
