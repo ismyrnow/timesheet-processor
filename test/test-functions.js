@@ -59,3 +59,18 @@ exports.getGroupedTasks = function (test) {
 
 	test.done();
 };
+
+exports.getHoursForTasks = function (test) {
+	var tasks = [
+		{ project: "MBI", time: 1.5, comments: "a, b" },
+		{ project: "Foo", time: 0.25, comments: null },
+		{ project: "Lunch", time: 0.75, comments: "" },
+		{ project: "MBI", time: 2.25, comments: "e" }
+	];
+	var hours = fn.getHoursForTasks(tasks);
+
+	test.equal(hours.totalHours, 4.75);
+	test.equal(hours.projectHours, 3.75);
+
+	test.done();
+};

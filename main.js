@@ -16,6 +16,8 @@ var currentDate;
 
 	fs.readFileSync(filename).toString().split("\r\n").forEach(processLine);
 
+	var allTasks = [];
+
 	for (var date in dates) {
 		if (dates.hasOwnProperty(date)) {
 
@@ -23,11 +25,14 @@ var currentDate;
 			var groupedTasks = fn.getGroupedTasks(tasks);
 
 			printTasks(date, groupedTasks);
+
+			allTasks = allTasks.concat(groupedTasks);
 		}
 	}
-
+	
 	console.log("");
 
+	printTotalHours(fn.getHoursForTasks(allTasks));
 }());
 
 function processLine (line) {
@@ -50,7 +55,10 @@ function processLine (line) {
 }
 
 function printTasks(date, tasks) {
-	console.log(printf("\n%s\n", date));
+	var hours = fn.getHoursForTasks(tasks);
+
+	console.log("\n%s (%d / %d)\n",
+		date, hours.projectHours, hours.totalHours);
 
 	for (var i in tasks) {
 		var task = tasks[i];
@@ -66,4 +74,10 @@ function printTask(task) {
 	}
 
 	console.log(output);
+}
+
+function printTotalHours(hours) {
+	console.log("Total Hours: %d / %d",
+		hours.projectHours,
+		hours.totalHours);
 }

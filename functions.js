@@ -75,3 +75,21 @@ exports.getGroupedTasks = function (tasks) {
 
 	return groupedTasks;
 };
+
+exports.getHoursForTasks = function (tasks) {
+	var projectHours = 0; // Hours for tasks with comments
+	var totalHours = 0; // Hours for all tasks
+
+	for (var i in tasks) {
+		var task = tasks[i];
+		totalHours += task.time;
+		if (task.comments && task.comments !== "") {
+			projectHours += task.time;
+		}
+	}
+
+	return {
+		projectHours: projectHours,
+		totalHours: totalHours
+	};
+};
