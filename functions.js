@@ -1,3 +1,5 @@
+var _ = require("underscore");
+
 var regex = {
 	empty: /^\s*$/,
 	date: /^[A-Za-z]{3} .*$/,
@@ -13,10 +15,16 @@ exports.createTask = function (text) {
 	var task = {
 		time: exports.getElapsedTime(startTime, endTime),
 		project: parsed[3],
-		comments: parsed[4]
+		comments: exports.parseComments(parsed[4])
 	};
 
 	return task;
+};
+
+exports.parseComments = function (commentsString) {
+	return _.uniq(commentsString.split(",").map(function (s) {
+		return s.trim();
+	}));
 };
 
 exports.getElapsedTime = function (startTime, endTime) {
@@ -66,7 +74,7 @@ exports.getGroupedTasks = function (tasks) {
 			var groupedTask = groupedTasks[projectIndex];
 
 			groupedTask.time += task.time;
-			groupedTask.comments += ", " + task.comments;
+			groupedTask.comments = _.union(groupedTask.comments, task.comments);
 
 			groupedTasks[projectIndex] = groupedTask;
 

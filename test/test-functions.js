@@ -16,7 +16,9 @@ exports.createTask = function (test) {
 
 	test.equal(task.time, "3.25");
 	test.equal(task.project, "MBI");
-	test.equal(task.comments, "offline wizard, deploy");
+	test.equal(task.comments.length, 2);
+	test.equal(task.comments[0], "offline wizard");
+	test.equal(task.comments[1], "deploy");
 
 	test.done();
 };
@@ -43,9 +45,9 @@ exports.getTextType = function (test) {
 
 exports.getGroupedTasks = function (test) {
 	var tasks = [
-		{ project: "MBI", time: 1.5, comments: "a, b" },
-		{ project: "Lunch", time: 0.75, comments: "c, d" },
-		{ project: "MBI", time: 2.25, comments: "e" }
+		{ project: "MBI", time: 1.5, comments: ["a", "b"] },
+		{ project: "Lunch", time: 0.75, comments: ["c", "d"] },
+		{ project: "MBI", time: 2.25, comments: ["e"] }
 	];
 	var groupedTasks = fn.getGroupedTasks(tasks);
 
@@ -55,7 +57,7 @@ exports.getGroupedTasks = function (test) {
 		groupedTasks[0] : groupedTasks[1];
 
 	test.equal(mbiTask.time, 3.75);
-	test.equal(mbiTask.comments, "a, b, e");
+	test.equal(mbiTask.comments.length, 3);
 
 	test.done();
 };
@@ -71,6 +73,19 @@ exports.getHoursForTasks = function (test) {
 
 	test.equal(hours.totalHours, 4.75);
 	test.equal(hours.projectHours, 3.75);
+
+	test.done();
+};
+
+exports.parseComments = function (test) {
+	var string = "foo, bar, foo,roh, dah";
+	var array = fn.parseComments(string);
+
+	test.equal(array.length, 4);
+	test.equal(array[0], "foo");
+	test.equal(array[1], "bar");
+	test.equal(array[2], "roh");
+	test.equal(array[3], "dah");
 
 	test.done();
 };
