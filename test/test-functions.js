@@ -1,3 +1,4 @@
+var _ = require("underscore");
 var fn = require("../functions");
 
 exports.getFractionalHour = function (test) {
@@ -7,6 +8,30 @@ exports.getFractionalHour = function (test) {
 
 exports.getElapsedTime = function (test) {
 	test.equal(fn.getElapsedTime("12:45", "2:15"), 1.5);
+	test.done();
+};
+
+exports.parseComments = function (test) {
+	var string = "foo, bar, foo,roh, dah";
+	var array = fn.parseComments(string);
+
+	test.equal(array instanceof Array, true);
+	test.equal(array.length, 4);
+	test.equal(array[0], "foo");
+	test.equal(array[1], "bar");
+	test.equal(array[2], "roh");
+	test.equal(array[3], "dah");
+
+	test.done();
+};
+
+exports.parseComments_Empty = function (test) {
+	var string = "";
+	var array = fn.parseComments(string);
+
+	test.equal(array instanceof Array, true);
+	test.equal(array.length, 0, "result should be an empty array");
+
 	test.done();
 };
 
@@ -28,7 +53,7 @@ exports.createTask_NoComments = function (test) {
 	var task = fn.createTask(text);
 
 	test.equal(task.project, "Lunch");
-	test.equal(task.comments, "");
+	test.equal(task.comments.length, 0, "comments should be an empty array");
 
 	test.done();
 };
@@ -46,15 +71,15 @@ exports.getTextType = function (test) {
 exports.getGroupedTasks = function (test) {
 	var tasks = [
 		{ project: "MBI", time: 1.5, comments: ["a", "b"] },
-		{ project: "Lunch", time: 0.75, comments: ["c", "d"] },
+		{ project: "WGA", time: 0.75, comments: ["c", "d"] },
+		{ project: "Lunch", time: 0.5, comments: [] },
 		{ project: "MBI", time: 2.25, comments: ["e"] }
 	];
 	var groupedTasks = fn.getGroupedTasks(tasks);
 
-	test.equal(groupedTasks.length, 2);
+	test.equal(groupedTasks.length, 3);
 
-	var mbiTask = (groupedTasks[0].project === "MBI") ?
-		groupedTasks[0] : groupedTasks[1];
+	var mbiTask = _.findWhere(groupedTasks, { project: "MBI" });
 
 	test.equal(mbiTask.time, 3.75);
 	test.equal(mbiTask.comments.length, 3);
@@ -64,28 +89,15 @@ exports.getGroupedTasks = function (test) {
 
 exports.getHoursForTasks = function (test) {
 	var tasks = [
-		{ project: "MBI", time: 1.5, comments: "a, b" },
-		{ project: "Foo", time: 0.25, comments: null },
-		{ project: "Lunch", time: 0.75, comments: "" },
-		{ project: "MBI", time: 2.25, comments: "e" }
+		{ project: "MBI", time: 1.5, comments: ["a, b"] },
+		{ project: "Foo", time: 0.25, comments: [] },
+		{ project: "Lunch", time: 0.75, comments: [] },
+		{ project: "MBI", time: 2.25, comments: ["e"] }
 	];
 	var hours = fn.getHoursForTasks(tasks);
 
 	test.equal(hours.totalHours, 4.75);
 	test.equal(hours.projectHours, 3.75);
-
-	test.done();
-};
-
-exports.parseComments = function (test) {
-	var string = "foo, bar, foo,roh, dah";
-	var array = fn.parseComments(string);
-
-	test.equal(array.length, 4);
-	test.equal(array[0], "foo");
-	test.equal(array[1], "bar");
-	test.equal(array[2], "roh");
-	test.equal(array[3], "dah");
 
 	test.done();
 };

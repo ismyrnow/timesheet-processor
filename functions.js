@@ -6,6 +6,7 @@ var regex = {
 	task: /^\[(.+)-(.+)\] ([^:]+)(?:: )?(.*)$/
 };
 
+/// returns: task => { time, project, comments }
 exports.createTask = function (text) {
 	var parsed = regex.task.exec(text);
 
@@ -21,10 +22,12 @@ exports.createTask = function (text) {
 	return task;
 };
 
+/// returns: array of unique comment strings or an
+///          empty array if there are no comments
 exports.parseComments = function (commentsString) {
-	return _.uniq(commentsString.split(",").map(function (s) {
+	return _.compact(_.uniq(commentsString.split(",").map(function (s) {
 		return s.trim();
-	}));
+	})));
 };
 
 exports.getElapsedTime = function (startTime, endTime) {
@@ -90,8 +93,10 @@ exports.getHoursForTasks = function (tasks) {
 
 	for (var i in tasks) {
 		var task = tasks[i];
+
 		totalHours += task.time;
-		if (task.comments && task.comments !== "") {
+
+		if (task.comments.length > 0) {
 			projectHours += task.time;
 		}
 	}

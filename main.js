@@ -74,7 +74,7 @@ function printTasks(date, tasks) {
 function printTask(task) {
 	var output = printf("  %s (%d)", task.project, task.time);
 
-	if (task.comments) {
+	if (task.comments.length) {
 		output += ": " + task.comments.join(", ");
 	}
 
