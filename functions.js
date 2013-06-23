@@ -1,4 +1,5 @@
 var _ = require("underscore");
+var Task = require("./task").Task;
 
 var regex = {
 	empty: /^\s*$/,
@@ -12,43 +13,12 @@ exports.createTask = function (text) {
 
 	var startTime = parsed[1];
 	var endTime = parsed[2];
+	var project = parsed[3];
+	var comments = parsed[4];
 
-	var task = {
-		time: exports.getElapsedTime(startTime, endTime),
-		project: parsed[3],
-		comments: exports.parseComments(parsed[4])
-	};
+	var task = new Task(project, startTime, endTime, comments);
 
 	return task;
-};
-
-/// returns: array of unique comment strings or an
-///          empty array if there are no comments
-exports.parseComments = function (commentsString) {
-	return _.compact(_.uniq(commentsString.split(",").map(function (s) {
-		return s.trim();
-	})));
-};
-
-exports.getElapsedTime = function (startTime, endTime) {
-	// Example: "12:45", "2:15" => 1.5
-	var start = exports.getFractionalHour(startTime);
-	var end = exports.getFractionalHour(endTime);
-
-	if (end < start) {
-		end += 12; // end is PM, start is AM
-	}
-
-	return end - start;
-};
-
-exports.getFractionalHour = function (timeString) {
-	// Example: "8:45" => 8.75
-	var timeArray = timeString.split(":");
-	var hour = parseInt(timeArray[0], 10);
-	var minute = parseInt(timeArray[1], 10) / 60;
-
-	return hour + minute;
 };
 
 exports.getTextType = function (text) {
@@ -96,7 +66,7 @@ exports.getHoursForTasks = function (tasks) {
 
 		totalHours += task.time;
 
-		if (task.comments.length > 0) {
+		if (task.isBillable()) {
 			projectHours += task.time;
 		}
 	}

@@ -1,49 +1,12 @@
 var _ = require("underscore");
 var fn = require("../functions");
-
-exports.getFractionalHour = function (test) {
-    test.equal(fn.getFractionalHour("8:15"), 8.25);
-    test.done();
-};
-
-exports.getElapsedTime = function (test) {
-	test.equal(fn.getElapsedTime("12:45", "2:15"), 1.5);
-	test.done();
-};
-
-exports.parseComments = function (test) {
-	var string = "foo, bar, foo,roh, dah";
-	var array = fn.parseComments(string);
-
-	test.equal(array instanceof Array, true);
-	test.equal(array.length, 4);
-	test.equal(array[0], "foo");
-	test.equal(array[1], "bar");
-	test.equal(array[2], "roh");
-	test.equal(array[3], "dah");
-
-	test.done();
-};
-
-exports.parseComments_Empty = function (test) {
-	var string = "";
-	var array = fn.parseComments(string);
-
-	test.equal(array instanceof Array, true);
-	test.equal(array.length, 0, "result should be an empty array");
-
-	test.done();
-};
+var Task = require("../task").Task;
 
 exports.createTask = function (test) {
 	var text = "[12:45-4:00] MBI: offline wizard, deploy";
 	var task = fn.createTask(text);
 
-	test.equal(task.time, "3.25");
-	test.equal(task.project, "MBI");
-	test.equal(task.comments.length, 2);
-	test.equal(task.comments[0], "offline wizard");
-	test.equal(task.comments[1], "deploy");
+	test.equal(task instanceof Task, true, "Return type should be a Task");
 
 	test.done();
 };
@@ -70,10 +33,10 @@ exports.getTextType = function (test) {
 
 exports.getGroupedTasks = function (test) {
 	var tasks = [
-		{ project: "MBI", time: 1.5, comments: ["a", "b"] },
-		{ project: "WGA", time: 0.75, comments: ["c", "d"] },
-		{ project: "Lunch", time: 0.5, comments: [] },
-		{ project: "MBI", time: 2.25, comments: ["e"] }
+		new Task("MBI", "9:00", "10:15", "a, b"),
+		new Task("WGA", "10:15", "11:00", "c, d"),
+		new Task("Lunch", "11:00", "11:30", ""),
+		new Task("MBI", "11:30", "2:00", "e")
 	];
 	var groupedTasks = fn.getGroupedTasks(tasks);
 
@@ -89,15 +52,15 @@ exports.getGroupedTasks = function (test) {
 
 exports.getHoursForTasks = function (test) {
 	var tasks = [
-		{ project: "MBI", time: 1.5, comments: ["a, b"] },
-		{ project: "Foo", time: 0.25, comments: [] },
-		{ project: "Lunch", time: 0.75, comments: [] },
-		{ project: "MBI", time: 2.25, comments: ["e"] }
+		new Task("MBI", "9:00", "10:15", "a, b"),
+		new Task("WGA", "10:15", "11:00", "c, d"),
+		new Task("Lunch", "11:00", "11:30", ""),
+		new Task("MBI", "11:30", "2:00", "e")
 	];
 	var hours = fn.getHoursForTasks(tasks);
 
-	test.equal(hours.totalHours, 4.75);
-	test.equal(hours.projectHours, 3.75);
+	test.equal(hours.totalHours, 5);
+	test.equal(hours.projectHours, 4.5);
 
 	test.done();
 };
