@@ -42,6 +42,7 @@ exports.Task = function (project, startTime, endTime, comments) {
 };
 
 // Shared task functions
-	return this.comments.length > 0;
 exports.Task.prototype.isBillable = function () {
+  return this.comments.length > 0 &&
+    this.project.lastIndexOf('*') !== this.project.length - 1;
 };
