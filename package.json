@@ -1,0 +1,27 @@
+{
+  "name": "timesheet-processor",
+  "version": "0.0.0",
+  "description": "Timesheet processor run with NodeJS",
+  "main": "main.js",
+  "private": "true",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "underscore": "~1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "nodeunit test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ismyrnow/timesheet-processor.git"
+  },
+  "author": "Ishmael Smyrnow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ismyrnow/timesheet-processor/issues"
+  },
+  "homepage": "https://github.com/ismyrnow/timesheet-processor"
+}
