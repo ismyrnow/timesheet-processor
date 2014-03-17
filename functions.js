@@ -84,3 +84,7 @@ exports.getHoursForTasks = function (tasks) {
     totalHours: totalHours
   };
 };
+
+exports.formatHours = function (hours) {
+  return Math.ceil(hours * 4) / 4;
+};
