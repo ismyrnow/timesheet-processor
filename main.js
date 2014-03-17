@@ -1,88 +1,90 @@
-var fs = require("fs");
-var printf = require("util").format;
-var fn = require("./functions");
+'use strict';
+
+var fs = require('fs');
+var printf = require('util').format;
+var fn = require('./functions');
 
 var dates = {};
 var currentDate;
 
-(function main () {
+(function main() {
 
-	if (process.argv.length < 3) {
-		console.log("Usage: 'node main <path>'");
-		process.exit(1);
-	}
+  if (process.argv.length < 3) {
+    console.log('Usage: "node main <path>"');
+    process.exit(1);
+  }
 
-	var filename = process.argv[2];
+  var filename = process.argv[2];
 
-	if (!fs.existsSync(filename)) {
-		console.log("File not found.");
-		process.exit(1);
-	}
+  if (!fs.existsSync(filename)) {
+    console.log('File not found.');
+    process.exit(1);
+  }
 
-	fs.readFileSync(filename).toString().split("\r\n").forEach(processLine);
+  fs.readFileSync(filename).toString().split('\r\n').forEach(processLine);
 
-	var allTasks = [];
+  var allTasks = [];
 
-	for (var date in dates) {
-		if (dates.hasOwnProperty(date)) {
+  for (var date in dates) {
+    if (dates.hasOwnProperty(date)) {
 
-			var tasks = dates[date];
-			var groupedTasks = fn.getGroupedTasks(tasks);
+      var tasks = dates[date];
+      var groupedTasks = fn.getGroupedTasks(tasks);
 
-			printTasks(date, groupedTasks);
+      printTasks(date, groupedTasks);
 
-			allTasks = allTasks.concat(groupedTasks);
-		}
-	}
-	
-	console.log("");
+      allTasks = allTasks.concat(groupedTasks);
+    }
+  }
+  
+  console.log('');
 
-	printTotalHours(fn.getHoursForTasks(allTasks));
+  printTotalHours(fn.getHoursForTasks(allTasks));
 }());
 
-function processLine (line) {
-	var text = line.toString().replace(/[\r\n]/g, "");
+function processLine(line) {
+  var text = line.toString().replace(/[\r\n]/g, '');
 
-	var type = fn.getTextType(text);
+  var type = fn.getTextType(text);
 
-	switch (type) {
-		case "empty":
-			return;
-		case "date":
-			dates[text] = dates[text] || [];
-			currentDate = text;
-			break;
-		case "task":
-			var task = fn.createTask(text);
-			dates[currentDate].push(task);
-			break;
-	}
+  switch (type) {
+    case 'empty':
+      return;
+    case 'date':
+      dates[text] = dates[text] || [];
+      currentDate = text;
+      break;
+    case 'task':
+      var task = fn.createTask(text);
+      dates[currentDate].push(task);
+      break;
+  }
 }
 
 function printTasks(date, tasks) {
-	var hours = fn.getHoursForTasks(tasks);
+  var hours = fn.getHoursForTasks(tasks);
 
-	console.log("\n%s (%d / %d)\n",
-		date, hours.projectHours, hours.totalHours);
+  console.log('\n%s (%d / %d)\n',
+    date, hours.projectHours, hours.totalHours);
 
-	for (var i in tasks) {
-		var task = tasks[i];
-		printTask(task);
-	}
+  for (var i in tasks) {
+    var task = tasks[i];
+    printTask(task);
+  }
 }
 
 function printTask(task) {
-	var output = printf("  %s (%d)", task.project, task.time);
+  var output = printf('  %s (%d)', task.project, task.time);
 
-	if (task.comments.length) {
-		output += ": " + task.comments.join(", ");
-	}
+  if (task.comments.length) {
+    output += ': ' + task.comments.join(', ');
+  }
 
-	console.log(output);
+  console.log(output);
 }
 
 function printTotalHours(hours) {
-	console.log("Total Hours: %d / %d",
-		hours.projectHours,
-		hours.totalHours);
+  console.log('Total Hours: %d / %d',
+    hours.projectHours,
+    hours.totalHours);
 }
