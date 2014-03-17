@@ -27,7 +27,7 @@ function getFractionalHour(timeString) {
   // Example: ('8:45') => 8.75
   var timeArray = timeString.split(':');
   var hour = parseInt(timeArray[0], 10);
-  var minute = parseInt(timeArray[1], 10) / 60;
+  var minute = timeArray[1] ? parseInt(timeArray[1], 10) / 60 : 0;
 
   return hour + minute;
 }

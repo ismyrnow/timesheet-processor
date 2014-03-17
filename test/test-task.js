@@ -15,6 +15,16 @@ exports.newTask = function (test) {
 
 };
 
+exports.newTask_NoMinutes = function (test) {
+
+  var task = new Task('MBI', '8', '9', 'foo, bar');
+
+  test.equal(task.time, 1);
+
+  test.done();
+
+};
+
 exports.newTask_NoComments = function (test) {
 
   var task = new Task('MBI', '8:00', '9:15', '');
