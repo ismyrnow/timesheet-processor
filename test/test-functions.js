@@ -67,10 +67,25 @@ exports.getHoursForTasks = function (test) {
   test.done();
 };
 
+exports.getHoursForTasks_Rounded = function (test) {
+  var tasks = [
+    new Task('MBI', '9:00', '10:10', 'a, b'),
+    new Task('WGA', '10:15', '11:00', 'c, d'),
+    new Task('Lunch', '11:00', '11:30', ''),
+    new Task('MBI', '11:30', '1:46', 'e')
+  ];
+  var hours = fn.getHoursForTasks(tasks, fn.roundHours);
+
+  test.equal(hours.totalHours, 5);
+  test.equal(hours.projectHours, 4.5);
+
+  test.done();
+};
+
 exports.roundHours = function (test) {
-  var hours = fn.formatHours(1.5);
-  var hours2 = fn.formatHours(1.001);
-  var hours3 = fn.formatHours(1.6667);
+  var hours = fn.roundHours(1.5);
+  var hours2 = fn.roundHours(1.001);
+  var hours3 = fn.roundHours(1.6667);
   
   test.equal(hours, 1.5);
   test.equal(hours2, 1.25);

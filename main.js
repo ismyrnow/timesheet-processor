@@ -39,7 +39,7 @@ var currentDate;
   
   console.log('');
 
-  printTotalHours(fn.getHoursForTasks(allTasks));
+  printTotalHours(allTasks);
 }());
 
 function processLine(line) {
@@ -62,10 +62,10 @@ function processLine(line) {
 }
 
 function printTasks(date, tasks) {
-  var hours = fn.getHoursForTasks(tasks);
+  var hours = fn.getHoursForTasks(tasks, fn.roundHours);
 
   console.log('\n%s (%d / %d)\n',
-    date, fn.roundHours(hours.projectHours), fn.roundHours(hours.totalHours));
+    date, hours.projectHours, hours.totalHours);
 
   for (var i in tasks) {
     var task = tasks[i];
@@ -83,7 +83,9 @@ function printTask(task) {
   console.log(output);
 }
 
-function printTotalHours(hours) {
+function printTotalHours(tasks) {
+  var hours = fn.getHoursForTasks(tasks, fn.roundHours);
+  
   console.log('Total Hours: %d / %d',
     fn.roundHours(hours.projectHours),
     fn.roundHours(hours.totalHours));

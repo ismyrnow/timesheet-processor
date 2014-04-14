@@ -65,17 +65,19 @@ exports.getGroupedTasks = function (tasks) {
   return groupedTasks;
 };
 
-exports.getHoursForTasks = function (tasks) {
+exports.getHoursForTasks = function (tasks, roundingFunction) {
   var projectHours = 0; // Hours for tasks with comments
   var totalHours = 0; // Hours for all tasks
+  roundingFunction = roundingFunction || _.identity;
 
   for (var i in tasks) {
     var task = tasks[i];
+    var hours = roundingFunction(task.time);
 
-    totalHours += task.time;
+    totalHours += hours;
 
     if (task.isBillable()) {
-      projectHours += task.time;
+      projectHours += hours;
     }
   }
 
