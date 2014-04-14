@@ -42,7 +42,7 @@ node main timesheet.txt
 Running tests requires nodeunit.
 
 ```
-nodeunit test
+npm test
 ```
 
 ## License
