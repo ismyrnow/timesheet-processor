@@ -67,7 +67,7 @@ exports.getHoursForTasks = function (test) {
   test.done();
 };
 
-exports.formatHours = function (test) {
+exports.roundHours = function (test) {
   var hours = fn.formatHours(1.5);
   var hours2 = fn.formatHours(1.001);
   var hours3 = fn.formatHours(1.6667);

@@ -85,6 +85,6 @@ exports.getHoursForTasks = function (tasks) {
   };
 };
 
-exports.formatHours = function (hours) {
+exports.roundHours = function (hours) {
   return Math.ceil(hours * 4) / 4;
 };

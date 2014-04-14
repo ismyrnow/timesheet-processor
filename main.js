@@ -65,7 +65,7 @@ function printTasks(date, tasks) {
   var hours = fn.getHoursForTasks(tasks);
 
   console.log('\n%s (%d / %d)\n',
-    date, fn.formatHours(hours.projectHours), fn.formatHours(hours.totalHours));
+    date, fn.roundHours(hours.projectHours), fn.roundHours(hours.totalHours));
 
   for (var i in tasks) {
     var task = tasks[i];
@@ -74,7 +74,7 @@ function printTasks(date, tasks) {
 }
 
 function printTask(task) {
-  var output = printf('  %s (%d)', task.project, fn.formatHours(task.time));
+  var output = printf('  %s (%d)', task.project, fn.roundHours(task.time));
 
   if (task.comments.length) {
     output += ': ' + task.comments.join(', ');
@@ -85,6 +85,6 @@ function printTask(task) {
 
 function printTotalHours(hours) {
   console.log('Total Hours: %d / %d',
-    fn.formatHours(hours.projectHours),
-    fn.formatHours(hours.totalHours));
+    fn.roundHours(hours.projectHours),
+    fn.roundHours(hours.totalHours));
 }
